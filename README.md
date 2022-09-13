@@ -1,5 +1,5 @@
 # Pushchair-Review-Theme-Reporting
-A prototype flexdahsboard to report thematic analysis (from Nvivo) of popular pushchair on Amazon
+A prototype flexdashboard to report thematic analysis (from Nvivo) of popular pushchair on Amazon
 
 Aim of the project is to analyse the qual data thematically in Nvivo, and then export the results into a Flexdashboard in built in R.
 
