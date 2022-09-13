@@ -1,0 +1,477 @@
+---
+title: "Prototype Flexdashboard"
+author:
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+<style>
+.navbar {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  display: block;
+  position: fixed;
+  width: 200px; /* Modify the width of the sidebar */
+}
+body {
+          margin-left: 200px; /* Add a left margin to avoid content     overlay */
+padding-top:0px
+}
+</style>
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+
+# LIBRARY AND PACKAGES ---------------------------------------------------------
+.libPaths("C:/R library")
+getwd()
+
+# for general formatting
+if(!require("tidyverse")) {install.packages("tidyverse")}
+library(tidyverse)
+library(magrittr)
+if(!require("readxl")) {install.packages("readxl")}
+library(readxl)
+
+# for theme trees
+if(!require("visNetwork")) {install.packages("visNetwork")}
+library(visNetwork)
+
+# for plotting text and wordclouds
+if(!require("kableExtra")) {install.packages("kableExtra")}
+library(kableExtra)
+if(!require("tidytext")) {install.packages("tidytext")}
+library(tidytext)
+if(!require("wordcloud")) {install.packages("wordcloud")}
+library(wordcloud)
+
+```
+
+ 
+# Abstract
+
+### Authors {data-height=100}
+Author names or project citation here
+
+### Context and Aims {data-height=225}
+Outline context and aims here
+
+### Method {data-height=225}
+Outline method briefly here (supported by separate technical documents)
+
+### Results {data-height=225}
+Direct reader to seperate sections of the Flexdashboard
+
+### Implications {data-height=225}
+Outline concise conclusions and implications from the results
+
+
+
+# Results {data-navmenu="Quant Overview" data-icon="fa-signal"}
+
+## Column {data-width=200}
+
+### Notes
+```{r}
+print("add notes here")
+```
+
+## Column {data-width=250}
+
+### Chart A1
+```{r}
+print("add summary visual")
+```
+
+### Chart A2
+```{r}
+print("add summary visual")
+```
+
+## Column {data-width=500}
+
+### Chart B
+```{r}
+print("add summary visual")
+```
+
+
+
+# Theme Tree {data-navmenu="Qual Overview" data-icon="fa-tree"}
+
+### Qual Theme Overview
+```{r}
+# DIAGONAL NETWORK VISUALIATION ------------------------------------------------
+# with visNetwork package
+
+visNodes <- read_xlsx("visNodes.xlsx")
+visEdges <- read_xlsx("visEdges.xlsx")
+
+#increase fontsize of nodes
+visNodes <-
+  visNodes %>%
+  mutate(font.size = 30) %>%
+  mutate(shape = 'rectangle')
+
+visNetwork(visNodes, visEdges) %>%
+  visNodes() %>%
+  visEdges(arrows = "to") %>%
+  visHierarchicalLayout(direction = "LR", levelSeparation = 500) %>%
+  visOptions(collapse = TRUE)
+
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# 2) IMPORT NVIVO CODING MATRIX ------------------------------------------------
+
+# Next we read in the Framework Matrix to provide more detailed visuals on the 
+# parent and child themes. 
+
+# read in Nvivo theme coding matrix
+Nvivo_themes <- read_excel("NVivo Output 2 - Framework Matrix.xlsx") # may have
+# resave this in Excel (as .xlsx) if NVivo kicks out bad encoding.
+
+# split nvivo ID from main ID and drop nvivo ID
+Nvivo_themes <- separate(data = Nvivo_themes, 
+                         col = ...1, 
+                         into = c("nvivoID", "ID"), 
+                         sep = ":")
+
+Nvivo_themes %<>%
+  select(-nvivoID) # drop Nvivo ID
+
+# formatting the new df
+Nvivo_themes$ID <- as.numeric(Nvivo_themes$ID)
+Nvivo_themes <- Nvivo_themes[order(Nvivo_themes$ID), ]
+Nvivo_themes <- as.data.frame(Nvivo_themes)
+
+# specific formatting for dataset (optional extra parameters)
+Nvivo_themes <- Nvivo_themes[,-c(7)]
+Nvivo_themes <- Nvivo_themes[,-c(14:25)]
+
+# If mixed methods - join nvivo themes to main df
+#<full_data> <- left_join(<full_data>, Nvivo_themes, by = "ID")
+
+# THEME COUNTS -----------------------------------------------------------------
+
+# code block to take total persons who mentioned each theme (not references)
+
+# function to count text strings in each column
+theme_counter <- function(x) {
+  length(which(str_detect(x, pattern = "")))
+}
+
+# apply function across each column in df and return counts as values
+theme_counts <- apply(Nvivo_themes, MARGIN = 2, FUN = theme_counter)
+theme_counts <- data.frame(theme_counts)
+
+# set up new df with themes as a first column and counts as second column
+col_names <- list(colnames(Nvivo_themes)) # list theme names
+theme_total <- data.frame(col_names, theme_counts)
+rownames(theme_total) <- NULL # get rid of rownames from before
+theme_total %<>%
+  rename("theme" = c..ID....A...Issues....B...Heavy....C...Misrepresented.Child.weight...) %>%
+  mutate(theme = as.factor(theme)) %>%
+  mutate(theme_counts = as.numeric(theme_counts))
+
+rm(col_names, theme_counts)
+```
+
+
+# Issues {data-navmenu="Qual Overview" data-icon="fa-list"}
+
+## Overview {data-height=400}
+
+[This would be an overview of parent theme].
+
+## Sub-theme prevalence {data-height=600}
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+# PLOT THEME DATA --------------------------------------------------------------
+theme_total[3:5, ] %>%
+  ggplot(aes(x = theme, y = theme_counts)) +
+  geom_col() +
+  coord_flip()
+
+```
+
+# NA Reviews {data-navmenu="Qual Overview" data-icon="fa-list"}
+
+## Overview {data-height=400}
+
+[This would be an overview of parent theme].
+
+## Sub-theme prevalence {data-height=600}
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+# PLOT THEME DATA --------------------------------------------------------------
+theme_total[6, ] %>%
+  ggplot(aes(x = theme, y = theme_counts)) +
+  geom_col() +
+  coord_flip()
+
+```
+
+# Positive Views {data-navmenu="Qual Overview" data-icon="fa-list"}
+
+## Overview {data-height=400}
+
+[This would be an overview of parent theme].
+
+## Sub-theme prevalence {data-height=600}
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+# PLOT THEME DATA --------------------------------------------------------------
+theme_total[7:13, ] %>%
+  ggplot(aes(x = theme, y = theme_counts)) +
+  geom_col() +
+  coord_flip()
+
+```
+
+
+
+
+# Issues > Heavy {data-navmenu="Qual Detailed" data-icon="fa-list"}
+
+## Overview 
+
+[This would be an overview of sub theme]
+
+## plot quotes
+```{r}
+# plot quotes
+Nvivo_themes$`B : Heavy` %>% # change for each child theme
+  na.omit() %>%
+  as.data.frame() %>%
+  rename("Example Quotes" = ".") %>%
+  kbl() %>%
+  kable_styling()
+
+```
+
+## plot wordcloud
+```{r}
+# plot wordcloud
+Nvivo_themes$`B : Heavy` %>% # change for each child theme
+  na.omit() %>%
+  as.data.frame() %>%
+  unnest_tokens(word, ".") %>%
+  #anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100, min.freq = 1))
+```
+
+
+# Issues > Misrepresented child weight {data-navmenu="Qual Detailed" data-icon="fa-list"}
+
+## Overview 
+
+[This would be an overview of sub theme]
+
+## plot quotes
+```{r}
+# plot quotes
+Nvivo_themes$`C : Misrepresented Child weight` %>% # change for each child theme
+  na.omit() %>%
+  as.data.frame() %>%
+  rename("Example Quotes" = ".") %>%
+  kbl() %>%
+  kable_styling()
+```
+
+## plot wordcloud
+```{r}
+# plot wordcloud
+Nvivo_themes$`C : Misrepresented Child weight` %>% # change for each child theme
+  na.omit() %>%
+  as.data.frame() %>%
+  unnest_tokens(word, ".") %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100, min.freq = 1))
+```
+
+
+# Issues > Rain cover {data-navmenu="Qual Detailed" data-icon="fa-list"}
+
+## Overview 
+
+[This would be an overview of sub theme]
+
+## plot quotes
+```{r}
+# plot quotes
+Nvivo_themes$`D : Rain cover` %>% # change for each child theme
+  na.omit() %>%
+  as.data.frame() %>%
+  rename("Example Quotes" = ".") %>%
+  kbl() %>%
+  kable_styling()
+```
+
+## plot wordcloud
+```{r}
+# plot wordcloud
+Nvivo_themes$`D : Rain cover` %>% # change for each child theme
+  na.omit() %>%
+  as.data.frame() %>%
+  unnest_tokens(word, ".") %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100, min.freq = 1))
+```
+
+# NA review {data-navmenu="Qual Detailed" data-icon="fa-list"}
+
+## Overview 
+
+[This would be an overview of sub theme]
+
+## plot quotes
+```{r}
+# plot quotes
+Nvivo_themes$`E : NA review` %>% # change for each child theme
+  na.omit() %>%
+  as.data.frame() %>%
+  rename("Example Quotes" = ".") %>%
+  kbl() %>%
+  kable_styling()
+```
+
+## plot wordcloud
+```{r}
+# plot wordcloud
+Nvivo_themes$`E : NA review` %>% # change for each child theme
+  na.omit() %>%
+  as.data.frame() %>%
+  unnest_tokens(word, ".") %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100, min.freq = 1))
+```
+
+# Positive view > Child enjoys {data-navmenu="Qual Detailed" data-icon="fa-list"}
+
+## Overview 
+
+[This would be an overview of sub theme]
+
+## plot quotes
+```{r}
+# plot quotes
+Nvivo_themes$`G : Child enjoys` %>% # change for each child theme
+  na.omit() %>%
+  as.data.frame() %>%
+  rename("Example Quotes" = ".") %>%
+  kbl() %>%
+  kable_styling()
+
+```
+
+## plot wordcloud
+```{r}
+# plot wordcloud
+Nvivo_themes$`G : Child enjoys` %>% # change for each child theme
+  na.omit() %>%
+  as.data.frame() %>%
+  unnest_tokens(word, ".") %>%
+  #anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100, min.freq = 1))
+```
+
+
+# Positive view > Compact {data-navmenu="Qual Detailed" data-icon="fa-list"}
+
+## Overview 
+
+[This would be an overview of sub theme]
+
+## plot quotes
+```{r}
+# plot quotes
+Nvivo_themes$`H : Compact` %>% # change for each child theme
+  na.omit() %>%
+  as.data.frame() %>%
+  rename("Example Quotes" = ".") %>%
+  kbl() %>%
+  kable_styling()
+```
+
+## plot wordcloud
+```{r}
+# plot wordcloud
+Nvivo_themes$`H : Compact` %>% # change for each child theme
+  na.omit() %>%
+  as.data.frame() %>%
+  unnest_tokens(word, ".") %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100, min.freq = 1))
+```
+
+
+# Positive view > Easy to use {data-navmenu="Qual Detailed" data-icon="fa-list"}
+
+## Overview 
+
+[This would be an overview of sub theme]
+
+## plot quotes
+```{r}
+# plot quotes
+Nvivo_themes$`I : Easy to use` %>% # change for each child theme
+  na.omit() %>%
+  as.data.frame() %>%
+  rename("Example Quotes" = ".") %>%
+  kbl() %>%
+  kable_styling()
+```
+
+## plot wordcloud
+```{r}
+# plot wordcloud
+Nvivo_themes$`I : Easy to use` %>% # change for each child theme
+  na.omit() %>%
+  as.data.frame() %>%
+  unnest_tokens(word, ".") %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100, min.freq = 1))
+```
+
+# Positive view > General view {data-navmenu="Qual Detailed" data-icon="fa-list"}
+
+## Overview 
+
+[This would be an overview of sub theme]
+
+## plot quotes
+```{r}
+# plot quotes
+Nvivo_themes$`J : General view` %>% # change for each child theme
+  na.omit() %>%
+  as.data.frame() %>%
+  rename("Example Quotes" = ".") %>%
+  kbl() %>%
+  kable_styling()
+```
+
+## plot wordcloud
+```{r}
+# plot wordcloud
+Nvivo_themes$`J : General view` %>% # change for each child theme
+  na.omit() %>%
+  as.data.frame() %>%
+  unnest_tokens(word, ".") %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100, min.freq = 1))
+```
