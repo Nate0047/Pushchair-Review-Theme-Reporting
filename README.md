@@ -3,7 +3,7 @@ A prototype flexdahsboard to report thematic analysis (from Nvivo) of popular pu
 
 Aim of the project is to analyse the qual data thematically in Nvivo, and then export the results into a Flexdashboard in built in R.
 
-Data was downloaded from Amazon (https://www.amazon.co.uk/Hauck-Pushchair-Foldable-Position-Adjustable/product-reviews/B01LRUWAKY/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews) to a .xlsx file. It gives us the first 100 reviews of the pushchair whihc can be viewed in Excel. 
+Data was downloaded from Amazon (https://www.amazon.co.uk/Hauck-Pushchair-Foldable-Position-Adjustable/product-reviews/B01LRUWAKY/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews) to a .xlsx file. It gives us the first 100 reviews of the pushchair which can be viewed in Excel. 
 
 This data can be read directly into NVivo for thematic analysis. Once thematic analysis is complete, a user can create two outputs that can be read into R for prep into a Flexdashboard:
 1) An export of their codebook, saved as an .xlsx file;
