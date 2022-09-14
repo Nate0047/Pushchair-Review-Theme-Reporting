@@ -194,8 +194,10 @@ rm(col_names, theme_counts)
 # PLOT THEME DATA --------------------------------------------------------------
 theme_total[3:5, ] %>%
   ggplot(aes(x = theme, y = theme_counts)) +
-  geom_col() +
-  coord_flip()
+  geom_col(fill = "#0390fc") +
+  coord_flip() +
+  theme_bw() +
+  scale_y_continuous(breaks = 0:25)
 
 ```
 
@@ -212,9 +214,11 @@ theme_total[3:5, ] %>%
 # PLOT THEME DATA --------------------------------------------------------------
 theme_total[6, ] %>%
   ggplot(aes(x = theme, y = theme_counts)) +
-  geom_col() +
-  coord_flip()
-
+  geom_col(fill = "#0390fc") +
+  coord_flip() +
+  theme_bw() +
+  scale_y_continuous(breaks = 0:25)
+  
 ```
 
 # Positive Views {data-navmenu="Qual Overview" data-icon="fa-list"}
@@ -230,8 +234,10 @@ theme_total[6, ] %>%
 # PLOT THEME DATA --------------------------------------------------------------
 theme_total[7:13, ] %>%
   ggplot(aes(x = theme, y = theme_counts)) +
-  geom_col() +
-  coord_flip()
+  geom_col(fill = "#0390fc") +
+  coord_flip() +
+  theme_bw() +
+  scale_y_continuous(breaks = 0:25)
 
 ```
 
