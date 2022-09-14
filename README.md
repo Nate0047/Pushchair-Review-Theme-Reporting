@@ -11,4 +11,4 @@ This data can be read directly into NVivo for thematic analysis. Once thematic a
 
 Bit of manual work to set up some files in Excel (visNodes and visEdges) and some work may have to be done on the Framework Matrix exported from Nvivo, as there a lots of bugs in NVivo. 
 
-From there thematic analysis can be presented in Flexdashboard following the code within the .rmd file and using the supporting files. 
+From there thematic analysis can be presented in Flexdashboard following the code within the .rmd file and using the supporting files. This would allow for mixed methods reporting to stakeholders, combining analysis from various skills acorss a research team. 
