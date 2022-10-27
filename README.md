@@ -9,6 +9,6 @@ This data can be read directly into NVivo for thematic analysis. Once thematic a
 1) An export of their codebook, saved as an .xlsx file;
 2) A 'Framework Matrix' with participants on rows and themes (including all sub-themes) in columns. First run 'auto summarise' in the framework matrix to populate it with the text that was coded in each theme. This can then be exported by right-clicking on the top left of the matrix and exporting it to an .xlsx.
 
-Bit of manual work to set up some files in Excel (visNodes and visEdges) and some work may have to be done on the Framework Matrix exported from Nvivo, as there a lots of bugs in NVivo. 
+Bit of manual work to set up some files in Excel (visNodes and visEdges) and some work may have to be done on the Framework Matrix exported from Nvivo, depending on what bugs you may experience in exporting this matrix from Nvivo. 
 
 From there thematic analysis can be presented in Flexdashboard following the code within the .rmd file and using the supporting files. This would allow for mixed methods reporting to stakeholders, combining analysis from various skills acorss a research team. 
